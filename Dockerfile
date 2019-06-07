@@ -1,7 +1,8 @@
 FROM alpine:latest
 MAINTAINER sabrsorensen@gmail.com
 
-RUN apk -U add docker gcc git python2-dev py2-pip musl-dev linux-headers
+# install plex_autoscan dependencies and curl and grep for helper script dependencies.
+RUN apk -U add docker gcc git python2-dev py2-pip musl-dev linux-headers curl grep
 
 # download plex_autoscan
 RUN git clone --depth 1 --single-branch --branch master https://github.com/l3uddz/plex_autoscan /plex_autoscan && \
@@ -12,8 +13,10 @@ RUN git clone --depth 1 --single-branch --branch master https://github.com/l3udd
     ln -s /plex_autoscan/config /config
 
 ADD start-plex_autoscan.sh /
-
 RUN chmod +x /start-plex_autoscan.sh
+
+ADD healthcheck-plex_autoscan.sh /
+RUN chmod +x /healthcheck-plex_autoscan.sh
 
 # map /config to host defined config path (used to store configuration from app)
 VOLUME /config
@@ -21,8 +24,7 @@ VOLUME /config
 # expose port for http
 EXPOSE 3468/tcp
 
-# set permissions
-#################
-
-# run script to set uid, gid and permissions
 CMD ["/bin/sh", "/start-plex_autoscan.sh"]
+
+HEALTHCHECK --interval=20s --timeout=10s --start-period=10s --retries=5 \
+    CMD ["/bin/sh", "/healthcheck-plex_autoscan.sh"]
