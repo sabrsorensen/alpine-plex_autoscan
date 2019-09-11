@@ -4,13 +4,19 @@ MAINTAINER sabrsorensen@gmail.com
 # install plex_autoscan dependencies and curl and grep for helper script dependencies.
 RUN apk -U add docker gcc git python2-dev py2-pip musl-dev linux-headers curl grep
 
+ENV PLEX_AUTOSCAN_CONFIG /config/config.json
+ENV PLEX_AUTOSCAN_LOGFILE /config/plex_autoscan.log
+ENV PLEX_AUTOSCAN_LOGLEVEL INFO
+ENV PLEX_AUTOSCAN_QUEUEFILE /config/queue.db
+ENV PLEX_AUTOSCAN_CACHEFILE /config/cache.db
+
 # download plex_autoscan
-RUN git clone --depth 1 --single-branch --branch master https://github.com/l3uddz/plex_autoscan /plex_autoscan && \
+RUN git clone --depth 1 --single-branch --branch master https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan && \
     # install pip requirements
-    cd /plex_autoscan && \
+    cd /opt/plex_autoscan && \
     python -m pip install --no-cache-dir -r requirements.txt && \
     # link the config directory to expose as a volume
-    ln -s /plex_autoscan/config /config
+    ln -s /opt/plex_autoscan/config /config
 
 ADD start-plex_autoscan.sh /
 RUN chmod +x /start-plex_autoscan.sh

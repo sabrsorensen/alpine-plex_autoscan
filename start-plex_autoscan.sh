@@ -1,16 +1,18 @@
 #! /bin/sh
 
-cd /plex_autoscan
+cd /opt/plex_autoscan
 git pull
 
-if [ ! -f /config/config.json ]
+if [ ! -f ${PLEX_AUTOSCAN_CONFIG} ]
 then
-    python /plex_autoscan/scan.py sections --config=/config/config.json --loglevel=INFO --cachefile=/config/cache.db --queuefile=/config/queue.db --logfile=/config/plex_autoscan.log
-    echo "Default config.json generated, please configure for your environment. Exiting."
-elif grep -q '"PLEX_TOKEN": "",' /config/config.json
+    python /opt/plex_autoscan/scan.py sections
+    echo "Default ${PLEX_AUTOSCAN_CONFIG} generated, please configure for your environment. Exiting."
+
+elif grep -q '"PLEX_TOKEN": "",' ${PLEX_AUTOSCAN_CONFIG}
 then
     echo "config.json has not been configured, exiting."
-else
-    python /plex_autoscan/scan.py server --config=/config/config.json --loglevel=INFO --cachefile=/config/cache.db --queuefile=/config/queue.db --logfile=/config/plex_autoscan.log
-fi
 
+else
+    python /opt/plex_autoscan/scan.py server
+
+fi
