@@ -1,5 +1,8 @@
-FROM alpine:latest
+FROM rclone/rclone:beta
 MAINTAINER sabrsorensen@gmail.com
+
+# linking the base image's rclone binary to the path expected by plex_autoscan's default config
+RUN ln /usr/local/bin/rclone /usr/bin/rclone
 
 # install plex_autoscan dependencies and curl and grep for helper script dependencies.
 RUN apk -U add docker gcc git python2-dev py2-pip musl-dev linux-headers curl grep
