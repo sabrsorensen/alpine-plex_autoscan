@@ -33,7 +33,7 @@ VOLUME /config
 # expose port for http
 EXPOSE 3468/tcp
 
-CMD ["/bin/sh", "/start-plex_autoscan.sh"]
+ENTRYPOINT ["/bin/sh", "/start-plex_autoscan.sh"]
 
 HEALTHCHECK --interval=20s --timeout=10s --start-period=10s --retries=5 \
     CMD ["/bin/sh", "/healthcheck-plex_autoscan.sh"]
