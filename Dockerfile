@@ -1,4 +1,4 @@
-FROM rclone/rclone:beta
+FROM rclone/rclone
 MAINTAINER sabrsorensen@gmail.com
 
 ARG BUILD_DATE
@@ -9,7 +9,7 @@ LABEL org.label-schema.vcs-ref=$VCS_REF \
       org.label-schema.build-date=$BUILD_DATE
 
 # linking the base image's rclone binary to the path expected by plex_autoscan's default config
-RUN ln /usr/local/bin/rclone /usr/bin/rclone
+RUN ln /root/rclone /usr/bin/rclone
 
 # install plex_autoscan dependencies and curl and grep for helper script dependencies.
 RUN apk -U add docker gcc git python2-dev py2-pip musl-dev linux-headers curl grep
