@@ -1,9 +1,10 @@
 # alpine-plex_autoscan
-Alpine Linux-based plex_autoscan image.
+A Docker image of [plex_autoscan](https://github.com/l3uddz/plex_autoscan), using [rclone's official Docker image](https://hub.docker.com/r/rclone/rclone) based on Alpine Linux as a foundation.
 
 **Application**
 
 [plex_autoscan](https://github.com/l3uddz/plex_autoscan)
+[rclone](https://github.com/rclone/rclone)
 
 
 **Description**
@@ -20,7 +21,7 @@ Mounting the Docker API socket file is necessary for the plex_autoscan service t
 
 Please take your Docker volume mount paths into account when configuring your config.json and replace all user variables in the following command defined by <> with the correct values accordingly.
 
-If using the rclone crypt or cache expire/refresh functionality, you will also need to map your rclone.conf into the container and specify the location in plex_autoscan.config
+If using the rclone crypt or cache expire/refresh functionality, you will also need to map your rclone.conf into the container and specify the location in plex_autoscan.config.
 
 ```
 docker run -d \
@@ -34,6 +35,7 @@ docker run -d \
     -e PGID=<gid for media group with access to your library> \
     sabrsorensen/alpine-plex_autoscan
 ```
+
 docker-compose.yml for coexisting plex and plex_autoscan containers, note the matching /data volume mappings:
 ```
     plex:
@@ -144,3 +146,5 @@ If you wish to use the Google Drive change monitoring, you'll need to run the to
 ```
 docker exec -it <containerName> /usr/bin/python /opt/plex_autoscan/scan.py authorize
 ```
+
+Please refer to the official plex_autoscan documentation for additional information.
