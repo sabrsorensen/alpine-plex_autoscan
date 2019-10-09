@@ -1,6 +1,13 @@
 FROM rclone/rclone:beta
 MAINTAINER sabrsorensen@gmail.com
 
+ARG BUILD_DATE
+ARG VCS_REF
+
+LABEL org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="https://github.com/sabrsorensen/alpine-plex_autoscan.git" \
+      org.label-schema.build-date=$BUILD_DATE
+
 # linking the base image's rclone binary to the path expected by plex_autoscan's default config
 RUN ln /usr/local/bin/rclone /usr/bin/rclone
 
