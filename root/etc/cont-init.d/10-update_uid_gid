@@ -1,0 +1,25 @@
+#!/usr/bin/with-contenv bash
+
+if [[ -z ${PUID+x} && $PUID -ne $(id -u plexautoscan) ]]
+then
+    usermod -o -u "$PUID" plexautoscan
+    update="true"
+fi
+
+if [[ -z ${PGID+x} && $PGID -ne $(id -g plexautoscan) ]]
+then
+    groupmod -o -g "$PGID" plexautoscan
+    update="true"
+fi
+
+echo "GID/UID
+User uid:    $(id -u plexautoscan)
+User gid:    $(id -g plexautoscan)
+------------------------------------
+"
+
+if [[ -z ${update+x} ]]
+then
+    chown -R plexautoscan:plexautoscan /config
+    chown -R plexautoscan:plexautoscan /opt/plexautoscan
+fi
