@@ -21,5 +21,5 @@ User gid:    $(id -g plexautoscan)
 if [ -n $update ]
 then
     chown -R plexautoscan:plexautoscan /config
-    chown -R plexautoscan:plexautoscan /opt/plexautoscan
+    chown -R plexautoscan:plexautoscan /opt/plex_autoscan
 fi
