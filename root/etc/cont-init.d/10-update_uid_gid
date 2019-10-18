@@ -12,6 +12,12 @@ then
     update="true"
 fi
 
+if [ -n $DOCKERGID ] && [ "*$DOCKERGID*" != "$(id -G plexautoscan)" ]
+then
+    groupmod -o -g "$DOCKERGID" docker
+    update="true"
+fi
+
 echo "GID/UID
 User uid:    $(id -u plexautoscan)
 User gid:    $(id -g plexautoscan)
