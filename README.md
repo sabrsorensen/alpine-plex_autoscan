@@ -1,5 +1,9 @@
 # alpine-plex_autoscan
-[![Docker Automated build](https://img.shields.io/docker/cloud/automated/sabrsorensen/alpine-plex_autoscan?label=Docker+Cloud+build+type)](https://hub.docker.com/r/sabrsorensen/alpine-plex_autoscan) [![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/sabrsorensen/alpine-plex_autoscan?label=Docker+Cloud+build+status)](https://hub.docker.com/r/sabrsorensen/alpine-plex_autoscan) [![Docker Pulls](https://img.shields.io/docker/pulls/sabrsorensen/alpine-plex_autoscan)](https://hub.docker.com/r/sabrsorensen/alpine-plex_autoscan) [![Docker image size](https://images.microbadger.com/badges/image/sabrsorensen/alpine-plex_autoscan.svg)](https://microbadger.com/images/sabrsorensen/alpine-plex_autoscan "Get your own image badge on microbadger.com") [![rclone version](https://img.shields.io/github/v/release/rclone/rclone?label=rclone%20version)](https://hub.docker.com/r/rclone/rclone)
+[![Docker Automated build](https://img.shields.io/docker/cloud/automated/sabrsorensen/alpine-plex_autoscan?label=Docker+Cloud+build+type)](https://hub.docker.com/r/sabrsorensen/alpine-plex_autoscan)
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/sabrsorensen/alpine-plex_autoscan?label=Docker+Cloud+build+status)](https://hub.docker.com/r/sabrsorensen/alpine-plex_autoscan)
+[![Docker Pulls](https://img.shields.io/docker/pulls/sabrsorensen/alpine-plex_autoscan)](https://hub.docker.com/r/sabrsorensen/alpine-plex_autoscan)
+[![Docker image size](https://images.microbadger.com/badges/image/sabrsorensen/alpine-plex_autoscan.svg)](https://microbadger.com/images/sabrsorensen/alpine-plex_autoscan "Get your own image badge on microbadger.com")
+[![rclone version](https://img.shields.io/github/v/release/rclone/rclone?label=rclone%20version)](https://hub.docker.com/r/rclone/rclone)
 
 A Docker image of [plex_autoscan](https://github.com/l3uddz/plex_autoscan), using [rclone's official Docker image](https://hub.docker.com/r/rclone/rclone) based on Alpine Linux as a foundation.
 
