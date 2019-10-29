@@ -6,7 +6,7 @@ then
     echo "Default config.json generated, please configure for your environment. Exiting."
 else
     server_ip=$(grep SERVER_IP ${PLEX_AUTOSCAN_CONFIG} | awk -F '"' '{print $4}')
-    if [ $server_ip -eq "0.0.0.0"]
+    if [ $server_ip = "0.0.0.0" ]
     then
         server_ip="127.0.0.1"
     fi
