@@ -30,6 +30,8 @@ Please take your Docker volume mount paths into account when configuring your co
 
 If using the rclone crypt or cache expire/refresh functionality, you will also need to map your rclone.conf into the container and specify the location in plex_autoscan.config.
 
+The container's healthcheck requires manual scanning to be enabled in order for the healthcheck request to authenticate successfully, so make sure `SERVER_ALLOW_MANUAL_SCAN` is set to `true` otherwise the container will report unhealthy.
+
 ```
 docker run -d \
     -p 3468:3468 \
