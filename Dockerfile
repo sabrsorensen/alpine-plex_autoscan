@@ -12,7 +12,18 @@ LABEL org.label-schema.vcs-ref=$VCS_REF \
 RUN ln /usr/local/bin/rclone /usr/bin/rclone
 
 # install plex_autoscan dependencies, shadow for user management, and curl and grep for healthcheck script dependencies.
-RUN apk -U --no-cache add docker gcc git python2-dev py2-pip musl-dev linux-headers curl grep shadow tzdata
+RUN apk -U --no-cache add \
+        docker \
+        gcc \
+        git \
+        python2-dev \
+        py2-pip \
+        musl-dev \
+        linux-headers \
+        curl \
+        grep \
+        shadow \
+        tzdata
 
 # install s6-overlay for process management
 ADD https://github.com/just-containers/s6-overlay/releases/download/v1.22.1.0/s6-overlay-amd64.tar.gz /tmp/
