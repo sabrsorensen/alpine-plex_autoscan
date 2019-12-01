@@ -31,10 +31,10 @@ RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C /
 ENTRYPOINT ["/init"]
 
 # download plex_autoscan
-RUN git clone --depth 1 --single-branch --branch master https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan && \
-    # install pip requirements
-    cd /opt/plex_autoscan && \
-    python -m pip install --no-cache-dir -r requirements.txt && \
+RUN git clone --depth 1 --single-branch --branch master https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan
+WORKDIR /opt/plex_autoscan
+# install pip requirements
+RUN python -m pip install --no-cache-dir -r requirements.txt && \
     # link the config directory to expose as a volume
     ln -s /opt/plex_autoscan/config /config
 
