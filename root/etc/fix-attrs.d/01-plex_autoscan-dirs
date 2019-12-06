@@ -1,2 +1,3 @@
 /opt/plex_autoscan true plexautoscan:plexautoscan 0600 0700
-/config true plexautoscan:plexautoscan 0640 0750
+/config true plexautoscan:plexautoscan 0664 0775
+/config/config.json true plexautoscan:plexautoscan 0666 0775
