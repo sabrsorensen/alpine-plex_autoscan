@@ -28,7 +28,7 @@ Mounting the Docker API socket file is necessary for the plex_autoscan service t
 
 Please take your Docker volume mount paths into account when configuring your config.json and replace all user variables in the following command defined by <> with the correct values accordingly.
 
-If using the rclone crypt or cache expire/refresh functionality, you will also need to map your rclone.conf into the container and specify the location in plex_autoscan.config.
+If using the rclone crypt or cache expire/refresh functionality, you will also need to map your rclone.conf into the container and specify the location in plex_autoscan.config. In order for rclone to listen on the interface used as the Docker gateway, you will need to adjust the rclone rc listening URL of your rclone mount process to listen on either the Docker gateway interface `--rc-addr=172.17.0.1:5572` (more secure, but also makes rclone rc usage from the host more inconvenient) or all available interfaces `--rc-addr=:5572` (far less secure than the default localhost:5572).
 
 The container's healthcheck requires manual scanning to be enabled in order for the healthcheck request to authenticate successfully, so make sure `SERVER_ALLOW_MANUAL_SCAN` is set to `true` otherwise the container will report unhealthy.
 
