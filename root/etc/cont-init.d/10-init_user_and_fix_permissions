@@ -26,6 +26,12 @@ debug_echo "
     GID: $gid
     "
 
+dockergid=${DOCKERGID:-1001}
+debug_echo "
+    DOCKERGID: $DOCKERGID
+    docker GID: $dockergid
+    "
+
 if [ $uid == 0 ] && [ $gid == 0 ]
 then
     echo "Running as root, no permission changes necessary. Exiting successfully."
@@ -43,6 +49,16 @@ else
     group="plexautoscan"
 fi
 
+dockergroup=$(getent group $dockergid | awk -F: '{print $1}')
+if [ $dockergroup ] && [ $dockergroup == "docker" ]
+then
+    debug_echo "Container's docker group's GID matches requested DOCKERGID $dockergid, no changes necessary: $(getent group $dockergid)"
+else
+    debug_echo "Container's docker group's GID does not match requested DOCKERGID $dockergid, updating docker group."
+    groupmod -o -g $dockergid docker
+    debug_echo "docker group GID updated to $dockergid."
+fi
+
 user=$(getent passwd $uid | awk -F: '{print $1}')
 if [ $user ]
 then
@@ -53,12 +69,18 @@ then
         usermod -a -G $group $user
         debug_echo "Supplemental group '$group' added to user '$user', now a member of groups: $(id -nG $uid)"
     fi
+    groups $user | grep &>/dev/null "\bdocker\b"
+    if [ $? != 0 ]
+    then
+        usermod -a -G docker $user
+        debug_echo "Supplemental group 'docker' added to user '$user', now a member of groups: $(id -nG $uid)"
+    fi
 else
     debug_echo "User account for running plex_autoscan does not exist, creating service user 'plexautoscan'."
-    useradd -u $uid -g $gid -N -r -m -s /sbin/nologin plexautoscan
+    useradd -u $uid -g $gid -G docker -N -r -m -s /bin/sh plexautoscan
     debug_echo "User 'plexautoscan' created.
         ------------------------------------
-        New user ID info:    $(id $uid)
+        New user ID info:    $(id plexautoscan)
         ------------------------------------
         "
 fi
