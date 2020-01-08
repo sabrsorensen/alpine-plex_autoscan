@@ -1,5 +1,5 @@
 FROM rclone/rclone
-MAINTAINER sabrsorensen@gmail.com
+LABEL maintainer="sabrsorensen@gmail.com"
 
 ARG BUILD_DATE
 ARG VCS_REF
@@ -16,8 +16,9 @@ RUN apk -U --no-cache add \
         docker \
         gcc \
         git \
-        python2-dev \
-        py2-pip \
+        python3 \
+        python3-dev \
+        py3-pip \
         musl-dev \
         linux-headers \
         curl \
@@ -34,26 +35,21 @@ ENTRYPOINT ["/init"]
 RUN git clone --depth 1 --single-branch --branch master https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan
 WORKDIR /opt/plex_autoscan
 # install pip requirements
-RUN python -m pip install --no-cache-dir -r requirements.txt && \
+RUN python3 -m pip install --no-cache-dir -r requirements.txt && \
     # link the config directory to expose as a volume
     ln -s /opt/plex_autoscan/config /config
 
 # environment variables to keep the init script clean
-ENV DOCKER_CONFIG /home/plexautoscan/docker_config.json
-ENV PLEX_AUTOSCAN_CONFIG /config/config.json
-ENV PLEX_AUTOSCAN_LOGFILE /config/plex_autoscan.log
-ENV PLEX_AUTOSCAN_LOGLEVEL INFO
-ENV PLEX_AUTOSCAN_QUEUEFILE /config/queue.db
-ENV PLEX_AUTOSCAN_CACHEFILE /config/cache.db
+ENV DOCKER_CONFIG=/home/plexautoscan/docker_config.json PLEX_AUTOSCAN_CONFIG=/config/config.json PLEX_AUTOSCAN_LOGFILE=/config/plex_autoscan.log PLEX_AUTOSCAN_LOGLEVEL=INFO PLEX_AUTOSCAN_QUEUEFILE=/config/queue.db PLEX_AUTOSCAN_CACHEFILE=/config/cache.db
 
 # add s6-overlay scripts and config
 ADD root/ /
 
-# create plexautoscan user
-RUN useradd -U -r -m -G docker -s /bin/false plexautoscan
-
 # map /config to host defined config path (used to store configuration from app)
 VOLUME /config
+
+# map /rclone_config to host defined rclone config path (used to store rclone configuration files)
+VOLUME /rclone_config
 
 # map /plexDb to directory containing the Plex library database.
 VOLUME /plexDb
