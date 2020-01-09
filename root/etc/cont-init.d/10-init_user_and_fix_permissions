@@ -92,7 +92,7 @@ chmod 0666 /config/config.json
 chown -R $uid:$gid /opt/plex_autoscan
 find /opt/plex_autoscan -type d -exec chmod 0775 {} +
 find /opt/plex_autoscan -type f -exec chmod 0664 {} +
-chmod 0775 /opt/plex_autoscan/scan.py
+chmod 0775 /opt/plex_autoscan/scan.py /opt/plex_autoscan/scan
 
 echo "Permissions on /config and /opt/plex_autoscan restored successfully."
 exit 0
