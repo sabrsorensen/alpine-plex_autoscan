@@ -33,7 +33,7 @@ RUN apk update -qq && apk upgrade -qq && apk fix -qq
 ENTRYPOINT ["/init"]
 
 # download plex_autoscan
-RUN git clone --depth 1 --single-branch --branch develop https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan
+RUN git clone --depth 1 --single-branch --branch master https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan
 WORKDIR /opt/plex_autoscan
 # install pip requirements
 RUN python -m pip install --no-cache-dir -r requirements.txt && \
