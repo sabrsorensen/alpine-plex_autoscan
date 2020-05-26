@@ -25,15 +25,16 @@ RUN apk -U --no-cache add \
         shadow \
         tzdata
 
-## InstalL s6 overlay
-RUN wget https://github.com/just-containers/s6-overlay/releases/download/v2.0.0.1/s6-overlay-amd64.tar.gz -O s6-overlay.tar.gz && \
+## InstalL s6 overlay latest version
+RUN S6_RELEASE=$(curl -sX GET "https://api.github.com/repos/just-containers/s6-overlay/releases/latest" | awk '/tag_name/{print $4;exit}' FS='[""]'); \
+    wget https://github.com/just-containers/s6-overlay/releases/download/${S6_RELEASE}/s6-overlay-amd64.tar.gz -O s6-overlay.tar.gz && \
     tar xfv s6-overlay.tar.gz -C / && \
     rm -r s6-overlay.tar.gz
 RUN apk update -qq && apk upgrade -qq && apk fix -qq
 ENTRYPOINT ["/init"]
 
 # download plex_autoscan
-RUN git clone --depth 1 --single-branch --branch master https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan
+RUN git clone --depth 1 --single-branch --branch develop https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan
 WORKDIR /opt/plex_autoscan
 # install pip requirements
 RUN python -m pip install --no-cache-dir -r requirements.txt && \
