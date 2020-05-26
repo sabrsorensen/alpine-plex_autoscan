@@ -26,8 +26,8 @@ RUN apk -U --no-cache add \
         tzdata
 
 ## InstalL s6 overlay
-RUN VERION=$(curl -s https://api.github.com/repos/just-containers/s6-overlay/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')
-    wget https://github.com/just-containers/s6-overlay/releases/download/${VERSION}/s6-overlay-amd64.tar.gz -O s6-overlay.tar.gz && \
+RUN VERION="$(curl -s https://api.github.com/repos/just-containers/s6-overlay/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')"
+    wget https://github.com/just-containers/s6-overlay/releases/download/"$VERSION"/s6-overlay-amd64.tar.gz -O s6-overlay.tar.gz && \
     tar xfv s6-overlay.tar.gz -C / && \
     rm -r s6-overlay.tar.gz
 RUN apk update -qq && apk upgrade -qq && apk fix -qq
