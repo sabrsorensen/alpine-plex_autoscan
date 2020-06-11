@@ -6,7 +6,7 @@ on:
       - '.github/workflows/*'
       - '.github/.actionspanel/*'               
     branches: 
-      - deverlop
+      - dev
   schedule:
     - cron: '00 0 * * 6'
   repository_dispatch:
