@@ -1,5 +1,5 @@
 FROM rclone/rclone
-LABEL maintainer="sabrsorensen@gmail.com"
+LABEL maintainer="825813+sabrsorensen@users.noreply.github.com"
 
 ARG BUILD_DATE
 ARG VCS_REF
@@ -31,7 +31,7 @@ ADD https://github.com/just-containers/s6-overlay/releases/download/v1.22.1.0/s6
 RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C /
 
 # download plex_autoscan
-RUN git clone --depth 1 --single-branch --branch master https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan
+RUN git clone --depth 1 --single-branch https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan
 WORKDIR /opt/plex_autoscan
 
 # copy wrapper for 'easy docker run' usage.
