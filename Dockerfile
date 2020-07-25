@@ -1,5 +1,7 @@
 FROM rclone/rclone
 
+ARG OVERLAY_ARCH="amd64"
+ARG OVERLAY_VERSION="v2.0.0.1"
 ARG BUILD_DATE="unknown"
 ARG COMMIT_AUTHOR="unknown"
 ARG VCS_REF="unknown"
@@ -10,12 +12,11 @@ LABEL maintainer=${COMMIT_AUTHOR} \
     org.label-schema.vcs-url=${VCS_URL} \
     org.label-schema.build-date=${BUILD_DATE}
 
-
 # linking the base image's rclone binary to the path expected by plex_autoscan's default config
 RUN ln /usr/local/bin/rclone /usr/bin/rclone
 
 # install plex_autoscan dependencies, shadow for user management, and curl and grep for healthcheck script dependencies.
-RUN apk -U --no-cache add \
+RUN apk add --quiet --no-cache \
         docker \
         gcc \
         git \
@@ -29,16 +30,14 @@ RUN apk -U --no-cache add \
         shadow \
         tzdata
 
-RUN S6_RELEASE=$(curl -sX GET "https://api.github.com/repos/just-containers/s6-overlay/releases/latest" | awk '/tag_name/{print $4;exit}' FS='[""]'); \
-    wget https://github.com/just-containers/s6-overlay/releases/download/${S6_RELEASE}/s6-overlay-amd64.tar.gz -O s6-overlay.tar.gz && \
-    tar xfv s6-overlay.tar.gz -C / && \
-    rm -r s6-overlay.tar.gz
-RUN apk update -qq && apk upgrade -qq && apk fix -qq
+RUN echo "**** ${OVERLAY_VERSION} used ****" && \
+  curl -o /tmp/s6-overlay.tar.gz -L "https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}.tar.gz" >/dev/null 2>&1 && \
+  tar xfz /tmp/s6-overlay.tar.gz -C / >/dev/null 2>&1 && rm -rf /tmp/s6-overlay.tar.gz >/dev/null 2>&1
 
-RUN wget https://downloads.rclone.org/rclone-current-linux-amd64.zip -O rclone.zip --no-check-certificate && \
-    unzip rclone.zip && rm rclone.zip && \
-    mv rclone*/rclone /usr/bin && rm -r rclone* && \
-    mkdir -p /rclone
+RUN apk --no-cache update -qq \
+    apk --no-cache upgrade -qq \
+    apk --no-cache fix -qq && \
+    rm -rf /var/cache/apk/*
 
 # download plex_autoscan
 RUN git clone --depth 1 --single-branch --branch develop https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan
@@ -62,9 +61,6 @@ ADD root/ /
 # map /config to host defined config path (used to store configuration from app)
 VOLUME /config
 
-# map /rclone_config to host defined rclone config path (used to store rclone configuration files)
-VOLUME /rclone_config
-
 # map /plexDb to directory containing the Plex library database.
 VOLUME /plexDb
 
@@ -73,7 +69,6 @@ COPY healthcheck-plex_autoscan.sh /
 RUN chmod +x /healthcheck-plex_autoscan.sh
 HEALTHCHECK --interval=20s --timeout=10s --start-period=10s --retries=5 \
     CMD ["/bin/sh", "/healthcheck-plex_autoscan.sh"]
-
 
 # expose port for http
 EXPOSE 3468/tcp
