@@ -2,7 +2,7 @@
 
 if [ ! -f ${PLEX_AUTOSCAN_CONFIG} ]
 then
-    python /opt/plex_autoscan/scan.py sections
+    python3 /opt/plex_autoscan/scan.py sections
     echo "Default config.json generated, please configure for your environment. Exiting."
 else
     server_ip=$(grep SERVER_IP ${PLEX_AUTOSCAN_CONFIG} | awk -F '"' '{print $4}')
