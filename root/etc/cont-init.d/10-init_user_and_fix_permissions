@@ -89,6 +89,18 @@ chown -R $uid:$gid /config
 find /config -type d -exec chmod 0777 {} +
 chmod 0666 /config/config.json
 
+rclone=/config/rclone/rclone.conf
+if [[ ! -f ${rclone} ]]; then
+     echo " ------------------------------------"
+     echo "       Searching the rclone.conf"
+     echo " ------------------------------------"     
+     find /config -name "rclone.conf" -type f -exec cp ${rclone} \;
+     find /opt -name "rclone.conf" -type f -exec cp {} ${rclone} \;
+     echo " ------------------------------------"
+     echo "       copying the rclone.conf"
+     echo " ------------------------------------"     
+fi
+
 chown -R $uid:$gid /opt/plex_autoscan
 find /opt/plex_autoscan -type d -exec chmod 0775 {} +
 find /opt/plex_autoscan -type f -exec chmod 0664 {} +
