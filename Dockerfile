@@ -36,7 +36,7 @@ RUN S6_RELEASE=$(curl -sX GET "https://api.github.com/repos/just-containers/s6-o
 RUN apk update -qq && apk upgrade -qq && apk fix -qq
 
 # download plex_autoscan
-RUN git clone --depth 1 --single-branch --branch master https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan
+RUN git clone --depth 1 --single-branch --branch develop https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan
 WORKDIR /opt/plex_autoscan
 
 # copy wrapper for 'easy docker run' usage.
