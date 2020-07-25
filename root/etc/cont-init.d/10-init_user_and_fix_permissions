@@ -1,0 +1,98 @@
+#!/usr/bin/with-contenv sh
+
+debug=false
+if [ $PLEX_AUTOSCAN_LOGLEVEL == "DEBUG" ]
+then
+    debug=true
+fi
+
+debug_echo()
+{
+    if [ $debug = true ]
+    then
+        echo "$@"
+    fi
+}
+
+uid=${PUID:-1000}
+debug_echo "
+    PUID: $PUID
+    UID: $uid
+    "
+
+gid=${PGID:-1000}
+debug_echo "
+    PGID: $PGID
+    GID: $gid
+    "
+
+dockergid=${DOCKERGID:-1001}
+debug_echo "
+    DOCKERGID: $DOCKERGID
+    docker GID: $dockergid
+    "
+
+if [ $uid == 0 ] && [ $gid == 0 ]
+then
+    echo "Running as root, no permission changes necessary. Exiting successfully."
+    exit 0
+fi
+
+group=$(getent group $gid | awk -F: '{print $1}')
+if [ $group ]
+then
+    debug_echo "Group '$group' for running plex_autoscan exists: $(getent group $gid)"
+else
+    debug_echo "Group for running plex_autoscan does not exist, creating group 'plexautoscan'."
+    groupadd -g $gid -r plex_autoscan
+    debug_echo "Group 'plexautoscan' created."
+    group="plexautoscan"
+fi
+
+dockergroup=$(getent group $dockergid | awk -F: '{print $1}')
+if [ $dockergroup ] && [ $dockergroup == "docker" ]
+then
+    debug_echo "Container's docker group's GID matches requested DOCKERGID $dockergid, no changes necessary: $(getent group $dockergid)"
+else
+    debug_echo "Container's docker group's GID does not match requested DOCKERGID $dockergid, updating docker group."
+    groupmod -o -g $dockergid docker
+    debug_echo "docker group GID updated to $dockergid."
+fi
+
+user=$(getent passwd $uid | awk -F: '{print $1}')
+if [ $user ]
+then
+    debug_echo "User '$user' for running plex_autoscan exists: $(getent passwd $uid)"
+    groups $user | grep &>/dev/null "\b$group\b"
+    if [ $? != 0 ]
+    then
+        usermod -a -G $group $user
+        debug_echo "Supplemental group '$group' added to user '$user', now a member of groups: $(id -nG $uid)"
+    fi
+    groups $user | grep &>/dev/null "\bdocker\b"
+    if [ $? != 0 ]
+    then
+        usermod -a -G docker $user
+        debug_echo "Supplemental group 'docker' added to user '$user', now a member of groups: $(id -nG $uid)"
+    fi
+else
+    debug_echo "User account for running plex_autoscan does not exist, creating service user 'plexautoscan'."
+    useradd -u $uid -g $gid -G docker -N -r -m -s /bin/sh plexautoscan
+    debug_echo "User 'plexautoscan' created.
+        ------------------------------------
+        New user ID info:    $(id plexautoscan)
+        ------------------------------------
+        "
+fi
+
+chown -R $uid:$gid /config
+find /config -type d -exec chmod 0777 {} +
+chmod 0666 /config/config.json
+
+chown -R $uid:$gid /opt/plex_autoscan
+find /opt/plex_autoscan -type d -exec chmod 0775 {} +
+find /opt/plex_autoscan -type f -exec chmod 0664 {} +
+chmod 0775 /opt/plex_autoscan/scan.py /opt/plex_autoscan/scan
+
+echo "Permissions on /config and /opt/plex_autoscan restored successfully."
+exit 0

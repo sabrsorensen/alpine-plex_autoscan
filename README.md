@@ -35,7 +35,7 @@ The container's healthcheck requires manual scanning to be enabled in order for 
 ```
 docker run -d \
     -p 3468:3468 \
-    --name=<container name> \
+    --name=plexautoscan \
     -v <path root directory for all media libraries>:/data \
     -v <path for config files>:/config \
     -v <path to Plex database>:/plexDb \
@@ -43,7 +43,13 @@ docker run -d \
     -e PUID=<uid for plexautoscan user> \
     -e PGID=<gid for media group with access to your library> \
     -e DOCKERGID=<gid of docker group, for access to docker.sock> \
-    sabrsorensen/alpine-plex_autoscan
+    mdroob/pascan:latest
+```
+
+2 different  branches you can use 
+```
+latest  = plexautoscan githube repo = master ( stable version )
+deverlop = plexautoscan githube repo = deverlop  ( preview  version )
 ```
 
 docker-compose.yml for coexisting plex and plex_autoscan containers, note the matching /data volume mappings:
@@ -59,7 +65,7 @@ docker-compose.yml for coexisting plex and plex_autoscan containers, note the ma
         ...
 
     plexautoscan:
-        image: sabrsorensen/alpine-plex_autoscan
+        image: mrdoob/pascan
         container_name: plexautoscan
         ...
         environment:
