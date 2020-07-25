@@ -35,6 +35,11 @@ RUN S6_RELEASE=$(curl -sX GET "https://api.github.com/repos/just-containers/s6-o
     rm -r s6-overlay.tar.gz
 RUN apk update -qq && apk upgrade -qq && apk fix -qq
 
+RUN wget https://downloads.rclone.org/rclone-current-linux-amd64.zip -O rclone.zip --no-check-certificate && \
+    unzip rclone.zip && rm rclone.zip && \
+    mv rclone*/rclone /usr/bin && rm -r rclone* && \
+    mkdir -p /rclone
+
 # download plex_autoscan
 RUN git clone --depth 1 --single-branch --branch develop https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan
 WORKDIR /opt/plex_autoscan

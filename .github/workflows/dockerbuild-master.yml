@@ -57,3 +57,4 @@ jobs:
         --tag ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_REPO }}:master \
         --push . \
         --file ./Dockerfile
+        
