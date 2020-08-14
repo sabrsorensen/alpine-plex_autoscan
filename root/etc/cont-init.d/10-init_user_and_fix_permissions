@@ -86,8 +86,40 @@ else
 fi
 
 chown -R $uid:$gid /config
+chown -R $uid:$gid /plexDb
 find /config -type d -exec chmod 0777 {} +
+find /plexDb -type d -exec chmod 0777 {} +
 chmod 0666 /config/config.json
+
+rcfolder=/config/rclone
+if [[ ! -d "${rcfolder}" ]]; then
+   mkdir ${rcfolder}
+fi
+
+rclonepad=/config/rclone/rclone.conf
+if [[ -f "${rclonepad}" ]]; then
+     echo " ------------------------------------"
+     echo "  rclone is stored on /config/rclone"
+     echo " ------------------------------------"
+     chown -R $uid:$gid /config
+     find /config -type d -exec chmod 0777 {} +
+     chmod 0666 /config/config.json
+     chmod 0666 /config/rclone/rclone.conf
+  else 
+     echo " ------------------------------------"
+     echo "  Searching the rclone.conf || start"
+     echo " ------------------------------------"
+     mkdir /config/rclone/
+     find /config -name "rclone.conf" -type f -exec cp {} ${rclonepad} \;
+     find /opt -name "rclone.conf" -type f -exec cp {} ${rclonepad} \;
+     chown -R $uid:$gid /config
+     find /config -type d -exec chmod 0777 {} +
+     chmod 0666 /config/config.json
+     chmod 0666 /config/rclone/rclone.conf
+     echo " ------------------------------------"
+     echo "   copying the rclone.conf || done"
+     echo " ------------------------------------"     
+fi
 
 chown -R $uid:$gid /opt/plex_autoscan
 find /opt/plex_autoscan -type d -exec chmod 0775 {} +
