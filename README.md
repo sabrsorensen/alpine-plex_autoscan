@@ -155,7 +155,7 @@ Please reference the documentation for plex_autoscan to configure your config.js
 If you wish to use the Google Drive change monitoring, you'll need to run the token authorization workflow with the following docker exec command, replacing `<containerName>` with your plex_autoscan container's name:
 
 ```
-docker exec -it <containerName> /usr/bin/python /opt/plex_autoscan/scan.py authorize
+docker exec -it <containerName> /usr/bin/python3 /opt/plex_autoscan/scan.py authorize
 ```
 
 Please refer to the official plex_autoscan documentation for additional information.
