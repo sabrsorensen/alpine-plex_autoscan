@@ -22,7 +22,7 @@ else
        then
        if [[ -f ${PLEX_AUTOSCAN_CONFIG} && ${PGSELFTEST} -le 200 && ${PGSELFTEST} -gt 299 ]]
           then
-		  echo "[ WARNING ] -> PLEX_AUTOSCAN_CONFIG missing <- [ WARNING ]"
+          echo "[ WARNING ] -> PLEX_AUTOSCAN_CONFIG missing <- [ WARNING ]"
           echo "[ WARNING ] -> PLEX down or Token missmatched [ WARNING ]"
           echo "[ WARNING ] -> next check for accesible in 5 seconds [ WARNING ]"
           sleep 5
