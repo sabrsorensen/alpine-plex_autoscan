@@ -9,8 +9,11 @@ LABEL maintainer=${COMMIT_AUTHOR} \
     org.label-schema.vcs-url=${VCS_URL} \
     org.label-schema.build-date=${BUILD_DATE}
 
-# install plex_autoscan dependencies, shadow for user management, and curl and grep for healthcheck script dependencies.
-RUN  apk --no-cache update -qq && apk --no-cache upgrade -qq && apk --no-cache fix -qq && apk -U --no-cache add \
+RUN \
+ echo "**** install build packages ****" && \
+ echo http://dl-6.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories && \
+ apk --no-cache update -qq && apk --no-cache upgrade -qq && apk --no-cache fix -qq && \
+ apk add --quiet --no-cache \
         docker \
         gcc \
         git \
@@ -25,8 +28,9 @@ RUN  apk --no-cache update -qq && apk --no-cache upgrade -qq && apk --no-cache f
         tzdata \
         openssl \
         ca-certificates \
-        fuse \
-        echo "**** ${OVERLAY_VERSION} used ****" && \
+        fuse
+
+RUN echo "**** ${OVERLAY_VERSION} used ****" && \
   curl -o /tmp/s6-overlay.tar.gz -L "https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}.tar.gz" >/dev/null 2>&1 && \
   tar xfz /tmp/s6-overlay.tar.gz -C / >/dev/null 2>&1 && rm -rf /tmp/s6-overlay.tar.gz >/dev/null 2>&1
 
