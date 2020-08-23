@@ -27,19 +27,23 @@ RUN \
         tzdata \
         openssl \
         ca-certificates \
-        fuse && \
+        fuse \
+        unzip && \
   echo "**** ${OVERLAY_VERSION} used ****" && \
   curl -o /tmp/s6-overlay.tar.gz -L "https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}.tar.gz" >/dev/null 2>&1 && \
   tar xfz /tmp/s6-overlay.tar.gz -C / >/dev/null 2>&1 && rm -rf /tmp/s6-overlay.tar.gz >/dev/null 2>&1
 
-RUN git clone --depth 1 --single-branch https://github.com/doob187/plex_autoscan /opt/plex_autoscan
-RUN  wget https://downloads.rclone.org/rclone-${RCLONE_VERSION}-linux-${OVERLAY_ARCH}.zip -O rclone.zip >/dev/null 2>&1 && \
-     unzip -qq rclone.zip && rm rclone.zip && \
-     mv rclone*/rclone /usr/bin && rm -rf rclone*
+RUN \
+ git clone --depth 1 --single-branch https://github.com/doob187/plex_autoscan /opt/plex_autoscan && \
+ wget https://downloads.rclone.org/rclone-${RCLONE_VERSION}-linux-${OVERLAY_ARCH}.zip -O rclone.zip >/dev/null 2>&1 && \
+ unzip -qq rclone.zip && rm rclone.zip && \
+ mv rclone*/rclone /usr/bin && rm -rf rclone*
+
 ENV PATH=/opt/plex_autoscan:${PATH}
 COPY scan /opt/plex_autoscan
+
 # install pip requirements
-RUN python3 -m pip install --no-cache-dir -r requirements.txt && \
+RUN python3 -m pip install --no-cache-dir -r /opt/plex_autoscan/requirements.txt && \
     ln -s /opt/plex_autoscan/config /config
 # environment variables to keep the init script clean
 ENV DOCKER_CONFIG=/home/plexautoscan/docker_config.json PLEX_AUTOSCAN_CONFIG=/config/config.json PLEX_AUTOSCAN_LOGFILE=/config/plex_autoscan.log PLEX_AUTOSCAN_LOGLEVEL=INFO PLEX_AUTOSCAN_QUEUEFILE=/config/queue.db PLEX_AUTOSCAN_CACHEFILE=/config/cache.db
