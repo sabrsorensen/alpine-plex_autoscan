@@ -5,7 +5,9 @@ ARG BUILD_DATE="unknown"
 ARG COMMIT_AUTHOR="unknown"
 ARG RCLONE_VERSION="latest"
 LABEL maintainer=${COMMIT_AUTHOR} \
-      org.label-schema.build-date=${BUILD_DATE}
+    org.label-schema.vcs-ref=${VCS_REF} \
+    org.label-schema.vcs-url=${VCS_URL} \
+    org.label-schema.build-date=${BUILD_DATE}
 
 # install plex_autoscan dependencies, shadow for user management, and curl and grep for healthcheck script dependencies.
 RUN  apk --no-cache update -qq && apk --no-cache upgrade -qq && apk --no-cache fix -qq && apk -U --no-cache add \
