@@ -10,7 +10,7 @@ LABEL maintainer=${COMMIT_AUTHOR} \
     org.label-schema.build-date=${BUILD_DATE}
 RUN \
  echo "**** install build packages ****" && \
- echo http://dl-6.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories && \
+ echo http://dl-cdn.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories && \
  apk --no-cache update -qq && apk --no-cache upgrade -qq && apk --no-cache fix -qq && \
  apk add --quiet --no-cache \
         docker \
@@ -29,10 +29,12 @@ RUN \
         ca-certificates \
         fuse \
         unzip \
-        wget && \
+        wget \
+        bash && \
   echo "**** ${OVERLAY_VERSION} used ****" && \
   curl -o /tmp/s6-overlay.tar.gz -L "https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}.tar.gz" >/dev/null 2>&1 && \
-  tar xfz /tmp/s6-overlay.tar.gz -C / >/dev/null 2>&1 && rm -rf /tmp/s6-overlay.tar.gz >/dev/null 2>&1
+  tar xfz /tmp/s6-overlay.tar.gz -C / >/dev/null 2>&1 && rm -rf /tmp/s6-overlay.tar.gz >/dev/null 2>&1 && \
+  rm -rf /var/cache/apk/APK**
 
 RUN \
  echo "**** install plex_autoscan ****" && \
@@ -41,7 +43,7 @@ RUN \
    echo "**** install rclone ****" && \
    wget https://downloads.rclone.org/rclone-current-linux-amd64.zip -O rclone.zip >/dev/null 2>&1 && \
    unzip -qq rclone.zip && rm rclone.zip && \
-   mv rclone*/rclone /usr/bin && rm -rf rclone* 
+   mv rclone*/rclone /usr/bin && rm -rf rclone*
 
 ENV PATH=/opt/plex_autoscan:${PATH}
 COPY scan /opt/plex_autoscan
@@ -57,8 +59,8 @@ VOLUME /plexDb
 COPY healthcheck-plex_autoscan.sh /
 RUN chmod +x /healthcheck-plex_autoscan.sh
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/bin/sh", "/healthcheck-plex_autoscan.sh"]
+    CMD ["/bin/bash", "/healthcheck-plex_autoscan.sh"]
 # expose port for http
 EXPOSE 3468/tcp
-ENTRYPOINT ["/bin/sh", "-c"]
+ENTRYPOINT ["/bin/bash", "-c"]
 CMD ["/init"]
