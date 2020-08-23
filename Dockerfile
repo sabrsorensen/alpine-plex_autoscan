@@ -35,7 +35,7 @@ RUN echo "**** ${OVERLAY_VERSION} used ****" && \
   curl -o /tmp/s6-overlay.tar.gz -L "https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}.tar.gz" >/dev/null 2>&1 && \
   tar xfz /tmp/s6-overlay.tar.gz -C / >/dev/null 2>&1 && rm -rf /tmp/s6-overlay.tar.gz >/dev/null 2>&1
 
-RUN git clone --depth 1 --single-branch https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan
+RUN git clone --depth 1 --single-branch https://github.com/doob187/plex_autoscan /opt/plex_autoscan
 WORKDIR /opt/plex_autoscan
 
 ENV PATH=/opt/plex_autoscan:${PATH}
