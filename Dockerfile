@@ -38,10 +38,10 @@ RUN \
  echo "**** install plex_autoscan ****" && \
  git clone --depth 1 --single-branch https://github.com/l3uddz/plex_autoscan.git /opt/plex_autoscan
 RUN \
- echo "**** install rclone ****" && \
- wget https://downloads.rclone.org/rclone-current-linux-amd64.zip -O /tmp/rclone.zip >/dev/null 2>&1 && \
- unzip -qq /tmp/rclone.zip && rm -rf /tmp/rclone.zip && \
- mv /tmp/rclone*/rclone /usr/bin && rm -rf /tmp/rclone* 
+   echo "**** install rclone ****" && \
+   wget https://downloads.rclone.org/rclone-current-linux-amd64.zip -O rclone.zip >/dev/null 2>&1 && \
+   unzip -qq rclone.zip && rm rclone.zip && \
+   mv rclone*/rclone /usr/bin && rm -rf rclone* 
 
 ENV PATH=/opt/plex_autoscan:${PATH}
 COPY scan /opt/plex_autoscan
