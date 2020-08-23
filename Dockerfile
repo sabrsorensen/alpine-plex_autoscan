@@ -7,11 +7,8 @@ ARG RCLONE_VERSION="latest"
 LABEL maintainer=${COMMIT_AUTHOR} \
       org.label-schema.build-date=${BUILD_DATE}
 
-# linking the base image's rclone binary to the path expected by plex_autoscan's default config
-RUN ln /usr/local/bin/rclone /usr/bin/rclone
-
 # install plex_autoscan dependencies, shadow for user management, and curl and grep for healthcheck script dependencies.
-RUN apk -U --no-cache add \
+RUN  apk --no-cache update -qq && apk --no-cache upgrade -qq && apk --no-cache fix -qq && apk -U --no-cache add \
         docker \
         gcc \
         git \
@@ -32,34 +29,24 @@ RUN apk -U --no-cache add \
   tar xfz /tmp/s6-overlay.tar.gz -C / >/dev/null 2>&1 && rm -rf /tmp/s6-overlay.tar.gz >/dev/null 2>&1
 
 RUN git clone --depth 1 --single-branch https://github.com/doob187/plex_autoscan /opt/plex_autoscan
-WORKDIR /opt/plex_autoscan
-
 RUN  wget https://downloads.rclone.org/rclone-current-linux-${OVERLAY_ARCH}.zip -O rclone.zip >/dev/null 2>&1 && \
      unzip -qq rclone.zip && rm rclone.zip && \
-     mv rclone*/rclone /usr/bin && rm -rf rclone* 
-
+     mv rclone*/rclone /usr/bin && rm -rf rclone*
 ENV PATH=/opt/plex_autoscan:${PATH}
 COPY scan /opt/plex_autoscan
-
 # install pip requirements
 RUN python3 -m pip install --no-cache-dir -r requirements.txt && \
     ln -s /opt/plex_autoscan/config /config
-
 # environment variables to keep the init script clean
 ENV DOCKER_CONFIG=/home/plexautoscan/docker_config.json PLEX_AUTOSCAN_CONFIG=/config/config.json PLEX_AUTOSCAN_LOGFILE=/config/plex_autoscan.log PLEX_AUTOSCAN_LOGLEVEL=INFO PLEX_AUTOSCAN_QUEUEFILE=/config/queue.db PLEX_AUTOSCAN_CACHEFILE=/config/cache.db
-
 ADD root/ /
-
 VOLUME /config
 VOLUME /plexDb
-
 COPY healthcheck-plex_autoscan.sh /
 RUN chmod +x /healthcheck-plex_autoscan.sh
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/bin/sh", "/healthcheck-plex_autoscan.sh"]
-
 # expose port for http
 EXPOSE 3468/tcp
-
 ENTRYPOINT ["/bin/sh", "-c"]
 CMD ["/init"]
