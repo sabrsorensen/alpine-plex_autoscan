@@ -9,6 +9,8 @@ import os
 import requests
 import sys
 
+old_versions = {}
+current_versions = {}
 if os.path.exists('upstream_versions'):
     try:
         with open('upstream_versions', 'r') as ver_file:
@@ -19,7 +21,6 @@ if os.path.exists('upstream_versions'):
         os.remove('upstream_versions')
         print("Invalid upstream_versions. Removing and starting fresh.")
 
-current_versions = {}
 current_versions['s6_overlay_release_name'] = requests.get(
     'https://api.github.com/repos/just-containers/s6-overlay/releases/latest').json()["tag_name"]
 current_versions['rclone_release_name'] = requests.get(
