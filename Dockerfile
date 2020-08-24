@@ -37,7 +37,7 @@ RUN \
     echo "**** update pip ****" && \
     pip -q install --upgrade pip idna==2.8 && \
     echo "**** install plex_autoscan ****" && \
-    git clone --depth 1 --single-branch --branch develop https://github.com/l3uddz/plex_autoscan.git /opt/plex_autoscan && \
+    git clone -q --depth 1 --single-branch --b develop https://github.com/l3uddz/plex_autoscan.git /opt/plex_autoscan && \
     echo "**** install rclone ****" && \
     wget https://downloads.rclone.org/rclone-current-linux-amd64.zip -O rclone.zip >/dev/null 2>&1 && \
     unzip -qq rclone.zip && rm rclone.zip && \
@@ -47,7 +47,9 @@ ENV PATH=/opt/plex_autoscan:${PATH}
 COPY scan /opt/plex_autoscan
 
 # install pip requirements
-RUN python3 -m pip install --no-cache-dir -r /opt/plex_autoscan/requirements.txt && \
+RUN \
+    echo "**** install requirements ****" && \
+	python3 -m pip -q install --no-cache-dir -r /opt/plex_autoscan/requirements.txt && \
     ln -s /opt/plex_autoscan/config /config
 
 # environment variables to keep the init script clean
