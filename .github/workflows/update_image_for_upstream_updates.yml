@@ -17,10 +17,6 @@ jobs:
       - name: Check for upstream updates
         run: pip install docker requests && python .github/workflows/check_upstream_versions.py
 
-      - name: Rebuild image to include updates
-        if: ${{ env.REBUILD == 'true' }}
-        run: echo "I'd be rebuilding now."
-
       - name: Set up Docker Buildx
         if: ${{ env.REBUILD == 'true' }}
         uses: crazy-max/ghaction-docker-buildx@v3
@@ -41,6 +37,10 @@ jobs:
             --platform ${ARCHITECTURE//-/\/} \
             --output "type=image,push=true" \
             --tag ${GITHUB_REPOSITORY}:${GITHUB_REF//refs\/heads\//}-${GITHUB_SHA:0:7}-${ARCHITECTURE//linux-/} \
+            --build-arg BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+            --build-arg COMMIT_AUTHOR="$(git log -1 --pretty=format:'%ae')" \
+            --build-arg VCS_REF="${GITHUB_SHA}" \
+            --build-arg VCS_URL="${GITUB_SERVER_URL}/${GITHUB_REPOSITORY}" \
             --file ./Dockerfile ./
 
   publish:
