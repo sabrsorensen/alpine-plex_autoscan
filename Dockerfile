@@ -4,7 +4,6 @@ ARG BUILD_DATE="unknown"
 ARG COMMIT_AUTHOR="unknown"
 ARG VCS_REF="unknown"
 ARG VCS_URL="unknown"
-ARG S6_OVERLAY_VERSION="v2.0.0.1"
 
 LABEL maintainer=${COMMIT_AUTHOR} \
     org.label-schema.vcs-ref=${VCS_REF} \
@@ -32,7 +31,7 @@ RUN apk -U --no-cache add \
 RUN pip install --upgrade pip idna==2.8
 
 # install s6-overlay for process management
-ADD https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-amd64.tar.gz /tmp/
+ADD https://github.com/just-containers/s6-overlay/releases/download/v2.0.0.1/s6-overlay-amd64.tar.gz /tmp/
 RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C /
 
 # download plex_autoscan

@@ -10,16 +10,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
-        with:
-          name: upstream_versions
-        continue-on-error: true
       - name: Check for upstream updates
-        run: pip install requests && python .github/workflows/check_upstream_versions.py
-      - uses: actions/upload-artifact@v2
-        with:
-          name: upstream_versions
-          path: upstream_versions
+        run: pip install docker requests && python .github/workflows/check_upstream_versions.py
       - name: Rebuild image to include updates
         if: ${{ env.REBUILD == 'true' }}
         run: echo "I'd be rebuilding now."
