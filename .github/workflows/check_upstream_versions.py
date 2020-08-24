@@ -30,7 +30,7 @@ current_versions['rclone_release_name'] = requests.get(
 current_versions['plex_autoscan_commit_ref'] = requests.get(
     'https://api.github.com/repos/l3uddz/plex_autoscan/commits/develop').json()["sha"]
 current_versions['alpine-plex_autoscan_commit_ref'] = Repo(
-    '.').commit('HEAD').hexsha[:7]
+    '.').commit('HEAD').hexsha
 
 print("Current detected versions:\n" + json.dumps(current_versions, indent=2))
 
