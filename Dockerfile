@@ -25,9 +25,6 @@ RUN \
         grep \
         shadow \
         tzdata \
-        openssl \
-        ca-certificates \
-        fuse \
         unzip \
         wget \
         bash && \
@@ -37,13 +34,14 @@ RUN \
   rm -rf /var/cache/apk/APK**
 
 RUN \
- echo "**** install plex_autoscan ****" && \
- git clone --depth 1 --single-branch https://github.com/l3uddz/plex_autoscan.git /opt/plex_autoscan
-RUN \
-   echo "**** install rclone ****" && \
-   wget https://downloads.rclone.org/rclone-current-linux-amd64.zip -O rclone.zip >/dev/null 2>&1 && \
-   unzip -qq rclone.zip && rm rclone.zip && \
-   mv rclone*/rclone /usr/bin && rm -rf rclone*
+    echo "**** update pip ****" && \
+    pip -q install --upgrade pip idna==2.8 && \
+    echo "**** install plex_autoscan ****" && \
+    git clone --depth 1 --single-branch --branch develop https://github.com/l3uddz/plex_autoscan.git /opt/plex_autoscan && \
+    echo "**** install rclone ****" && \
+    wget https://downloads.rclone.org/rclone-current-linux-amd64.zip -O rclone.zip >/dev/null 2>&1 && \
+    unzip -qq rclone.zip && rm rclone.zip && \
+    mv rclone*/rclone /usr/bin && rm -rf rclone*
 
 ENV PATH=/opt/plex_autoscan:${PATH}
 COPY scan /opt/plex_autoscan
@@ -51,11 +49,15 @@ COPY scan /opt/plex_autoscan
 # install pip requirements
 RUN python3 -m pip install --no-cache-dir -r /opt/plex_autoscan/requirements.txt && \
     ln -s /opt/plex_autoscan/config /config
+
 # environment variables to keep the init script clean
 ENV DOCKER_CONFIG=/home/plexautoscan/docker_config.json PLEX_AUTOSCAN_CONFIG=/config/config.json PLEX_AUTOSCAN_LOGFILE=/config/plex_autoscan.log PLEX_AUTOSCAN_LOGLEVEL=INFO PLEX_AUTOSCAN_QUEUEFILE=/config/queue.db PLEX_AUTOSCAN_CACHEFILE=/config/cache.db
+
+## VOLUMEN & ROOT
 ADD root/ /
 VOLUME /config
 VOLUME /plexDb
+## healtcheck
 COPY healthcheck-plex_autoscan.sh /
 RUN chmod +x /healthcheck-plex_autoscan.sh
 HEALTHCHECK --interval=20s --timeout=10s --start-period=10s --retries=5 \
