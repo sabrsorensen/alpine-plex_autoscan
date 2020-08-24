@@ -1,5 +1,6 @@
 name: Rebuild with upstream updates
 on:
+  workflow_dispatch:
   schedule:
     - cron: "0 0 * * *"
 
