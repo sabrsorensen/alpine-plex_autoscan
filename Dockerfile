@@ -27,17 +27,19 @@ RUN \
         tzdata \
         unzip \
         wget \
-        bash && \
+        bash
+RUN \
   echo "**** ${OVERLAY_VERSION} used ****" && \
   curl -o /tmp/s6-overlay.tar.gz -L "https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}.tar.gz" >/dev/null 2>&1 && \
   tar xfz /tmp/s6-overlay.tar.gz -C / >/dev/null 2>&1 && rm -rf /tmp/s6-overlay.tar.gz >/dev/null 2>&1 && \
   rm -rf /var/cache/apk/APK**
-
 RUN \
     echo "**** update pip ****" && \
-    pip -q install --upgrade pip idna==2.8 && \
+    pip -q install --upgrade pip idna==2.8
+RUN \
     echo "**** install plex_autoscan ****" && \
-    git clone -q --depth 1 --single-branch --b develop https://github.com/l3uddz/plex_autoscan.git /opt/plex_autoscan && \
+    git clone --quite --depth 1 --single-branch --branch develop https://github.com/l3uddz/plex_autoscan.git /opt/plex_autoscan
+RUN \
     echo "**** install rclone ****" && \
     wget https://downloads.rclone.org/rclone-current-linux-amd64.zip -O rclone.zip >/dev/null 2>&1 && \
     unzip -qq rclone.zip && rm rclone.zip && \
@@ -49,7 +51,7 @@ COPY scan /opt/plex_autoscan
 # install pip requirements
 RUN \
     echo "**** install requirements ****" && \
-	python3 -m pip -q install --no-cache-dir -r /opt/plex_autoscan/requirements.txt && \
+    python3 -m pip -q install --no-cache-dir -r /opt/plex_autoscan/requirements.txt && \
     ln -s /opt/plex_autoscan/config /config
 
 # environment variables to keep the init script clean
