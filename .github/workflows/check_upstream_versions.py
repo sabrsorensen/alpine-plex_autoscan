@@ -34,7 +34,9 @@ with open('upstream_versions', 'w') as ver_file:
 
 if old_versions == current_versions:
     print("No version change, skipping image rebuild.")
-    sys.exit(0)
+    print("::set-env name=REBUILD::false")
 else:
-    print("Upstream versions changed, triggering image rebuild by exiting with error code 1.")
-    sys.exit(1)
+    print("Upstream versions changed.")
+    print("::set-env name=REBUILD::true")
+
+sys.exit(0)
