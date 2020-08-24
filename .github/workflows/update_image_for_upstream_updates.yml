@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Check for upstream updates
-        run: python .github/workflows/check_upstream_versions.py
+        run: pip install requests && python .github/workflows/check_upstream_versions.py
       - name: Rebuild image to include updates
         if: ${{ failure() }}
         run: echo "I'd be rebuilding now."
