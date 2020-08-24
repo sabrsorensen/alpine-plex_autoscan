@@ -4,6 +4,7 @@ ARG BUILD_DATE="unknown"
 ARG COMMIT_AUTHOR="unknown"
 ARG VCS_REF="unknown"
 ARG VCS_URL="unknown"
+ARG S6_OVERLAY_VERSION="v2.0.0.1"
 
 LABEL maintainer=${COMMIT_AUTHOR} \
     org.label-schema.vcs-ref=${VCS_REF} \
@@ -28,13 +29,14 @@ RUN apk -U --no-cache add \
         grep \
         shadow \
         tzdata
+RUN pip install --upgrade pip idna==2.8
 
 # install s6-overlay for process management
-ADD https://github.com/just-containers/s6-overlay/releases/download/v1.22.1.0/s6-overlay-amd64.tar.gz /tmp/
+ADD https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-amd64.tar.gz /tmp/
 RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C /
 
 # download plex_autoscan
-RUN git clone --depth 1 --single-branch https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan
+RUN git clone --depth 1 --single-branch --branch develop https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan
 WORKDIR /opt/plex_autoscan
 
 # copy wrapper for 'easy docker run' usage.

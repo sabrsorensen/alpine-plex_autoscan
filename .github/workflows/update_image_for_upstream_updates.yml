@@ -1,0 +1,16 @@
+name: Rebuild with upstream updates
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  check_versions_and_rebuild:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check for upstream updates
+        run: python check_upstream_versions.py
+      - name: Rebuild image to include updates
+        if: ${{ failure() }}
+        run: echo "I'd be rebuilding now."
