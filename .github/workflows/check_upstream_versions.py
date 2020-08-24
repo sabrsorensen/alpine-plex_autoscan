@@ -15,9 +15,9 @@ current_versions = {}
 client = docker.from_env()
 try:
     old_versions['rclone_release_name'] = client.containers.run(
-        os.environ['GITHUB_REPOSITORY'], command='rclone version', auto_remove=True, entrypoint='').decode('UTF-8').split('\n')[0].split(' ')[1]
+        os.environ['GITHUB_REPOSITORY'], command='rclone version', auto_remove=True, entrypoint='').decode('UTF-8').split('\n')[0].split(' ')[1].strip()
     old_versions['plex_autoscan_commit_ref'] = client.containers.run(
-        os.environ['GITHUB_REPOSITORY'], command='git --work-tree=/opt/plex_autoscan rev-parse HEAD', auto_remove=True, entrypoint='').decode('UTF-8')
+        os.environ['GITHUB_REPOSITORY'], command='git --work-tree=/opt/plex_autoscan rev-parse HEAD', auto_remove=True, entrypoint='').decode('UTF-8').strip()
     print("Detected image versions:\n" + json.dumps(old_versions, indent=2))
 except docker.errors.ContainerError as e:
     print(e)
