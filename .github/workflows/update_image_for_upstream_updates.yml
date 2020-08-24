@@ -1,5 +1,6 @@
 name: Rebuild with upstream updates
 on:
+  push:
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * *"
@@ -40,7 +41,7 @@ jobs:
             --build-arg BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
             --build-arg COMMIT_AUTHOR="$(git log -1 --pretty=format:'%ae')" \
             --build-arg VCS_REF="${GITHUB_SHA}" \
-            --build-arg VCS_URL="${GITUB_SERVER_URL}/${GITHUB_REPOSITORY}" \
+            --build-arg VCS_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" \
             --file ./Dockerfile ./
 
   publish:
