@@ -1,5 +1,8 @@
-.git
-.github
-hooks
+.devcontainer/*
+.git/*
+.github/*
+.vscode/*
+.dockerignore
+Dockerfile
 LICENSE
 README.md
