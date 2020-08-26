@@ -10,29 +10,31 @@ LABEL maintainer=${COMMIT_AUTHOR} \
     org.label-schema.vcs-url=${VCS_URL} \
     org.label-schema.build-date=${BUILD_DATE}
 
-
 # linking the base image's rclone binary to the path expected by plex_autoscan's default config
 RUN ln /usr/local/bin/rclone /usr/bin/rclone
 
 # install plex_autoscan dependencies, shadow for user management, and curl and grep for healthcheck script dependencies.
 RUN apk -U --no-cache add \
-        docker \
-        gcc \
-        git \
-        python3 \
-        python3-dev \
-        py3-pip \
-        musl-dev \
-        linux-headers \
-        curl \
-        grep \
-        shadow \
-        tzdata
+    docker \
+    gcc \
+    git \
+    python3 \
+    python3-dev \
+    py3-pip \
+    musl-dev \
+    linux-headers \
+    curl \
+    grep \
+    shadow \
+    tzdata
 RUN pip install --upgrade pip idna==2.8
 
 # install s6-overlay for process management
-ADD https://github.com/just-containers/s6-overlay/releases/download/v2.0.0.1/s6-overlay-amd64.tar.gz /tmp/
-RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C /
+RUN curl -sX GET "https://api.github.com/repos/just-containers/s6-overlay/releases/latest" | awk '/tag_name/{print $4;exit}' FS='[""]' > /etc/S6_RELEASE && \
+    wget https://github.com/just-containers/s6-overlay/releases/download/`cat /etc/S6_RELEASE`/s6-overlay-amd64.tar.gz -O /tmp/s6-overlay-amd64.tar.gz && \
+    tar xzf /tmp/s6-overlay-amd64.tar.gz -C / && \
+    rm /tmp/s6-overlay-amd64.tar.gz && \
+    echo "Installed s6-overlay `cat /etc/S6_RELEASE`"
 
 # download plex_autoscan
 RUN git clone --depth 1 --single-branch --branch develop https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan
