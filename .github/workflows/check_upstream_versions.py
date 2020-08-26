@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
 ###############################################################################
-# Query for the latest versions of rclone and plex_autoscan
+# Query for the latest versions of rclone, plex_autoscan, and s6-overlay
 ###############################################################################
 import docker
 import json
