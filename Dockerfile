@@ -1,6 +1,4 @@
 FROM alpine:latest
-ARG OVERLAY_ARCH="amd64"
-ARG OVERLAY_VERSION="v2.0.0.1"
 ARG BUILD_DATE="unknown"
 ARG COMMIT_AUTHOR="unknown"
 
@@ -25,37 +23,49 @@ RUN \
         grep \
         shadow \
         tzdata \
-        openssl \
-        ca-certificates \
-        fuse \
         unzip \
         wget \
-        bash && \
-  echo "**** ${OVERLAY_VERSION} used ****" && \
-  curl -o /tmp/s6-overlay.tar.gz -L "https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}.tar.gz" >/dev/null 2>&1 && \
-  tar xfz /tmp/s6-overlay.tar.gz -C / >/dev/null 2>&1 && rm -rf /tmp/s6-overlay.tar.gz >/dev/null 2>&1 && \
-  rm -rf /var/cache/apk/APK**
+        bash
 
 RUN \
- echo "**** install plex_autoscan ****" && \
- git clone --depth 1 --single-branch https://github.com/l3uddz/plex_autoscan.git /opt/plex_autoscan
+  echo "**** Install s6-overlay ****" && \ 
+  curl -sX GET "https://api.github.com/repos/just-containers/s6-overlay/releases/latest" | awk '/tag_name/{print $4;exit}' FS='[""]' > /etc/S6_RELEASE && \
+  wget https://github.com/just-containers/s6-overlay/releases/download/`cat /etc/S6_RELEASE`/s6-overlay-amd64.tar.gz -O /tmp/s6-overlay-amd64.tar.gz && \
+  tar xzf /tmp/s6-overlay-amd64.tar.gz -C / && \
+  rm /tmp/s6-overlay-amd64.tar.gz && \
+  echo "**** Installed s6-overlay `cat /etc/S6_RELEASE` ****"
+
 RUN \
-   echo "**** install rclone ****" && \
-   wget https://downloads.rclone.org/rclone-current-linux-amd64.zip -O rclone.zip >/dev/null 2>&1 && \
-   unzip -qq rclone.zip && rm rclone.zip && \
-   mv rclone*/rclone /usr/bin && rm -rf rclone*
+  echo "**** update pip ****" && \
+  pip -q install --upgrade pip idna==2.8
+
+RUN \
+  echo "**** install plex_autoscan ****" && \
+  git clone --depth 1 --single-branch --branch develop https://github.com/l3uddz/plex_autoscan /opt/plex_autoscan
+
+RUN \
+  echo "**** install rclone ****" && \
+  wget https://downloads.rclone.org/rclone-current-linux-amd64.zip -O rclone.zip >/dev/null 2>&1 && \
+  unzip -qq rclone.zip && rm rclone.zip && \
+  mv rclone*/rclone /usr/bin && rm -rf rclone*
 
 ENV PATH=/opt/plex_autoscan:${PATH}
 COPY scan /opt/plex_autoscan
 
 # install pip requirements
-RUN python3 -m pip install --no-cache-dir -r /opt/plex_autoscan/requirements.txt && \
+RUN \
+    echo "**** install requirements ****" && \
+    python3 -m pip -q install --no-cache-dir -r /opt/plex_autoscan/requirements.txt && \
     ln -s /opt/plex_autoscan/config /config
+
 # environment variables to keep the init script clean
 ENV DOCKER_CONFIG=/home/plexautoscan/docker_config.json PLEX_AUTOSCAN_CONFIG=/config/config.json PLEX_AUTOSCAN_LOGFILE=/config/plex_autoscan.log PLEX_AUTOSCAN_LOGLEVEL=INFO PLEX_AUTOSCAN_QUEUEFILE=/config/queue.db PLEX_AUTOSCAN_CACHEFILE=/config/cache.db
+
+## VOLUMEN & ROOT
 ADD root/ /
 VOLUME /config
 VOLUME /plexDb
+## healtcheck
 COPY healthcheck-plex_autoscan.sh /
 RUN chmod +x /healthcheck-plex_autoscan.sh
 HEALTHCHECK --interval=20s --timeout=10s --start-period=10s --retries=5 \
