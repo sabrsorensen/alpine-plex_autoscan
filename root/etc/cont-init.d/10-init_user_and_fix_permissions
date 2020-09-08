@@ -1,5 +1,8 @@
 #!/usr/bin/with-contenv sh
 
+apk add unzip --quiet
+curl --no-progress-meter https://rclone.org/install.sh | bash -s beta >/dev/null 2>&1
+
 debug=false
 if [ $PLEX_AUTOSCAN_LOGLEVEL == "DEBUG" ]
 then
