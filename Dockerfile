@@ -6,26 +6,14 @@ LABEL maintainer=${COMMIT_AUTHOR} \
     org.label-schema.vcs-ref=${VCS_REF} \
     org.label-schema.vcs-url=${VCS_URL} \
     org.label-schema.build-date=${BUILD_DATE}
+
 RUN \
  echo "**** install build packages ****" && \
- echo http://dl-cdn.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories && \
- apk --no-cache --no-progress update -qq && apk --no-cache --no-progress upgrade -qq && apk --no-cache --no-progress fix -qq && \
- apk add --quiet --no-cache --no-progress\
-        docker \
-        gcc \
-        git \
-        python3 \
-        python3-dev \
-        py3-pip \
-        musl-dev \
-        linux-headers \
-        curl \
-        grep \
-        shadow \
-        tzdata \
-        unzip \
-        wget \
-        bash
+  echo http://dl-cdn.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories && \
+ apk --quiet --no-cache --no-progress add \
+       docker gcc git python3 python3-dev py3-pip musl-dev \
+        linux-headers curl grep shadow tzdata wget bash tar rclone && \
+        rm -rf /var/cache/apk/*
 
 RUN \
   echo "**** Install s6-overlay ****" && \ 
