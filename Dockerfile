@@ -9,8 +9,8 @@ LABEL maintainer=${COMMIT_AUTHOR} \
 RUN \
  echo "**** install build packages ****" && \
  echo http://dl-cdn.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories && \
- apk --no-cache update -qq && apk --no-cache upgrade -qq && apk --no-cache fix -qq && \
- apk add --quiet --no-cache \
+ apk --no-cache --no-progress update -qq && apk --no-cache --no-progress upgrade -qq && apk --no-cache --no-progress fix -qq && \
+ apk add --quiet --no-cache --no-progress\
         docker \
         gcc \
         git \
@@ -42,12 +42,6 @@ RUN \
 RUN \
   echo "**** install plex_autoscan ****" && \
   git clone --depth 1 --single-branch --branch develop https://github.com/doob187/plex_autoscan /opt/plex_autoscan
-
-RUN \
-  echo "**** install rclone ****" && \
-  wget https://downloads.rclone.org/rclone-current-linux-amd64.zip -O rclone.zip >/dev/null 2>&1 && \
-  unzip -qq rclone.zip && rm rclone.zip && \
-  mv rclone*/rclone /usr/bin && rm -rf rclone*
 
 ENV PATH=/opt/plex_autoscan:${PATH}
 COPY scan /opt/plex_autoscan
