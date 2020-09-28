@@ -53,10 +53,14 @@ dockergroup=$(getent group $dockergid | awk -F: '{print $1}')
 if [ $dockergroup ] && [ $dockergroup == "docker" ]
 then
     debug_echo "Container's docker group's GID matches requested DOCKERGID $dockergid, no changes necessary: $(getent group $dockergid)"
+elif [ $dockergroup ] && [ $dockergroup != "docker"]
+then
+    echo "ERROR: an existing group uses the desired docker GID $dockergid, please select a new dockergid value."
+    exit 1
 else
-    debug_echo "Container's docker group's GID does not match requested DOCKERGID $dockergid, updating docker group."
-    groupmod -o -g $dockergid docker
-    debug_echo "docker group GID updated to $dockergid."
+    debug_echo "docker group does not exist, creating with GID $dockergid."
+    addgroup -g $dockergid -S docker
+    debug_echo "docker group create with GID $dockergid."
 fi
 
 user=$(getent passwd $uid | awk -F: '{print $1}')
@@ -85,9 +89,11 @@ else
         "
 fi
 
-chown -R $uid:$gid /config
-find /config -type d -exec chmod 0777 {} +
-chmod 0666 /config/config.json
+chown $uid:$gid /config
+chmod u+rwx /config
+cd /config
+chown $uid:$gid cache.db config.json* plex_autoscan.log* queue.db
+chmod u+rw cache.db config.json* plex_autoscan.log* queue.db
 
 chown -R $uid:$gid /opt/plex_autoscan
 find /opt/plex_autoscan -type d -exec chmod 0775 {} +

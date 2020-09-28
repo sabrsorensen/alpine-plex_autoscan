@@ -14,21 +14,7 @@ then
     echo "************************************************************************************"
     echo "ERROR: ${PLEX_AUTOSCAN_CONFIG} has not been configured, exiting."
     echo "************************************************************************************"
-fi
-rclone_conf_path=$(grep -P "CONFIG" ${PLEX_AUTOSCAN_CONFIG} | awk -F: '{print $2}' | awk -F\" '{print $2}')
-if [ ! -f ${rclone_conf_path} ]
-then
-    echo "************************************************************************************"
-    echo "ERROR: ${PLEX_AUTOSCAN_CONFIG}:RCLONE.CONFIG does not point to an existing file."
-    echo "************************************************************************************"
-    exit 1
-elif rclone --config ${rclone_conf_path} config show &> /dev/null
-then
-    exec s6-setuidgid $user python3 /opt/plex_autoscan/scan.py server
-    exit 0
-else
-    echo "************************************************************************************"
-    echo "ERROR: ${PLEX_AUTOSCAN_CONFIG}:RCLONE.CONFIG ${rclone_conf_path} is not a valid rclone config file."
-    echo "************************************************************************************"
     exit 1
 fi
+exec s6-setuidgid $user python3 /opt/plex_autoscan/scan.py server
+exit 0
