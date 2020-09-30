@@ -23,7 +23,7 @@ jobs:
         uses: docker/setup-qemu-action@v1
         with:
           image: tonistiigi/binfmt:latest
-          platforms: amd64,arm64,arm
+          platforms: ${{ matrix.architecture }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
