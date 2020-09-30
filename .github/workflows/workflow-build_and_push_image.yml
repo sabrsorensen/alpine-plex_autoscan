@@ -27,7 +27,7 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
         run: |
           echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
-          ARCHITECTURE=${{ matrix.architecture }} docker_build.sh
+          ARCHITECTURE=${{ matrix.architecture }} .github/workflows/docker_build.sh
 
   publish:
     runs-on: ubuntu-latest
@@ -43,4 +43,4 @@ jobs:
         run: |
           mkdir ~/.docker && echo '{"experimental": "enabled"}' > ~/.docker/config.json
           echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
-          docker_manifest.sh
+          .github/workflows/docker_manifest.sh
