@@ -25,7 +25,7 @@ else
 
     plex_url=$(grep "PLEX_LOCAL_URL" ${PLEX_AUTOSCAN_CONFIG} | awk -F\" '{print $4}')
     plex_token=$(grep "PLEX_TOKEN" ${PLEX_AUTOSCAN_CONFIG} | awk -F\" '{print $4}')
-    plex_test_url="${plex_url}/system?X-Plex-Token=${plex_token}"
+    plex_test_url="${plex_url}/?X-Plex-Token=${plex_token}"
     plex_test_result=$(curl -LIs "${plex_test_url}" -o /dev/null -w '%{http_code}\n')
     if [ ${plex_test_result} = 200 ]
     then
