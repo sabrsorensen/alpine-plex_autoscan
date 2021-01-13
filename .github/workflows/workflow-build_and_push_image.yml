@@ -42,6 +42,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Enable experimental Docker features
+        run: |
+          echo '{"experimental": "enabled"}' > ~/.docker/config.json
+
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
@@ -50,5 +54,4 @@ jobs:
 
       - name: Create and push docker manifest
         run: |
-          echo '{"experimental": "enabled"} ' >> ~/.docker/config.json
           .github/workflows/docker_manifest.sh
