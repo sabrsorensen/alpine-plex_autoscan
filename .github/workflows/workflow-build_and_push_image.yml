@@ -50,5 +50,5 @@ jobs:
 
       - name: Create and push docker manifest
         run: |
-          echo '{"experimental": "enabled"}' >> ~/.docker/config.json
+          echo '{"experimental": "enabled"} ' >> ~/.docker/config.json
           .github/workflows/docker_manifest.sh
