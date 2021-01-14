@@ -1,9 +1,9 @@
 # alpine-plex_autoscan
-[![Docker Automated build](https://img.shields.io/docker/cloud/automated/sabrsorensen/alpine-plex_autoscan?label=Docker+Cloud+build+type)](https://hub.docker.com/r/sabrsorensen/alpine-plex_autoscan)
-[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/sabrsorensen/alpine-plex_autoscan?label=Docker+Cloud+build+status)](https://hub.docker.com/r/sabrsorensen/alpine-plex_autoscan)
-[![Docker Pulls](https://img.shields.io/docker/pulls/sabrsorensen/alpine-plex_autoscan)](https://hub.docker.com/r/sabrsorensen/alpine-plex_autoscan)
-[![Docker image size](https://images.microbadger.com/badges/image/sabrsorensen/alpine-plex_autoscan.svg)](https://microbadger.com/images/sabrsorensen/alpine-plex_autoscan "Get your own image badge on microbadger.com")
-[![Docker image rclone version](https://img.shields.io/github/v/release/rclone/rclone?label=Docker%20image%20rclone%20version)](https://hub.docker.com/r/rclone/rclone)
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%203-blue.svg?style=flat)](https://github.com/sabrsorensen/alpine-cloudplow/blob/main/LICENSE)
+[![Container Build](https://img.shields.io/github/workflow/status/sabrsorensen/alpine-plex_autoscan/Build%20and%20push%20image?label=Container%20Build)](https://github.com/sabrsorensen/alpine-plex_autoscan/actions?query=workflow%3A%22Build+and+push+image%22)
+[![Rebuild for Upstream Updates](https://img.shields.io/github/workflow/status/sabrsorensen/alpine-plex_autoscan/Rebuild%20with%20upstream%20updates?label=Rebuild%20for%20Upstream%20Updates)](https://github.com/sabrsorensen/alpine-plex_autoscan/actions?query=workflow%3A%22Rebuild+with+upstream+updates%22)
+[![rclone version](https://img.shields.io/github/v/release/rclone/rclone?label=rclone%20version)](https://hub.docker.com/r/rclone/rclone)
 
 A Docker image of [plex_autoscan](https://github.com/l3uddz/plex_autoscan), using [rclone's official Docker image](https://hub.docker.com/r/rclone/rclone) based on Alpine Linux as a foundation.
 
@@ -13,11 +13,9 @@ A Docker image of [plex_autoscan](https://github.com/l3uddz/plex_autoscan), usin
 
 [rclone](https://github.com/rclone/rclone)
 
-
 **Description**
 
 plex_autoscan is a utility by l3uddz for intercepting Plex library refresh/scan requests from media managers such as Sonarr and Radarr and converting the requests into a more targeted scan. This both increases the responsiveness of adding new media to your library and alleviates some of the strain in performing a larger library refresh for each new media item.
-
 
 **Usage**
 
@@ -47,6 +45,7 @@ docker run -d \
 ```
 
 docker-compose.yml for coexisting plex and plex_autoscan containers, note the matching /data volume mappings:
+
 ```
     plex:
         image: plexinc/pms-docker:plexpass
@@ -150,6 +149,7 @@ and the associated config.json entries to match:
   "USE_DOCKER": true,
   "USE_SUDO": false
 ```
+
 Please reference the documentation for plex_autoscan to configure your config.json and replace all user variables in the above command defined by <> with the correct values accordingly.
 
 If you wish to use the Google Drive change monitoring, you'll need to run the token authorization workflow with the following docker exec command, replacing `<containerName>` with your plex_autoscan container's name:
