@@ -5,6 +5,10 @@
 [![Rebuild for Upstream Updates](https://img.shields.io/github/workflow/status/sabrsorensen/alpine-plex_autoscan/Rebuild%20with%20upstream%20updates?label=Rebuild%20for%20Upstream%20Updates)](https://github.com/sabrsorensen/alpine-plex_autoscan/actions?query=workflow%3A%22Rebuild+with+upstream+updates%22)
 [![rclone version](https://img.shields.io/github/v/release/rclone/rclone?label=rclone%20version)](https://hub.docker.com/r/rclone/rclone)
 
+## **Deprecated/retired/archived**
+
+[Autoscan](https://github.com/Cloudbox/autoscan) is the new hotness, I've migrated my stack to it and won't be maintaining this image further.
+
 A Docker image of [plex_autoscan](https://github.com/l3uddz/plex_autoscan), using [rclone's official Docker image](https://hub.docker.com/r/rclone/rclone) based on Alpine Linux as a foundation.
 
 **Application**
